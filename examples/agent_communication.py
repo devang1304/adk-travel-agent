@@ -1,0 +1,1 @@
+# Agent communication via MCP example

@@ -1,0 +1,1 @@
+# Coordinator Agent - Workflow coordination and management
