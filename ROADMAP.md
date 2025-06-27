@@ -11,23 +11,28 @@ Build an intelligent multi-agent AI system that takes user inputs (location, bud
 
 ## 🏗️ System Architecture
 
-### Multi-Agent Framework
+### Multi-Agent Framework (google-adk)
 ```
+                    ┌─────────────────────────────────┐
+                    │        google-adk Runtime      │
+                    │     (Agent Orchestration)       │
+                    └─────────────────────────────────┘
+                                     │
+        ┌────────────────────────────┼────────────────────────────┐
+        │                            │                            │
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │  Research Agent │    │   Flight Agent  │    │Accommodation    │
-│                 │    │                 │    │    Agent        │
+│   (google-adk)  │    │   (google-adk)  │    │Agent (google-adk)│
 └─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
-                                 │
-         ┌─────────────────────────────────────────────────────┐
-         │              Coordinator Agent                      │
-         │        (Orchestrates all other agents)              │
-         └─────────────────────────────────────────────────────┘
-                                 │
-         ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-         │  Activity Agent │    │   Budget Agent  │    │  Booking Agent  │
-         └─────────────────┘    └─────────────────┘    └─────────────────┘
+        │                            │                            │
+        └────────────────────────────┼────────────────────────────┘
+                                     │
+        ┌────────────────────────────┼────────────────────────────┐
+        │                            │                            │
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│  Activity Agent │    │   Budget Agent  │    │  Booking Agent  │
+│   (google-adk)  │    │   (google-adk)  │    │   (google-adk)  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
 ## 🚀 Development Phases
@@ -37,7 +42,7 @@ Build an intelligent multi-agent AI system that takes user inputs (location, bud
 
 #### Backend Infrastructure
 - [ ] Initialize Python project with FastAPI framework
-- [ ] Set up multi-agent framework (CrewAI or Microsoft AutoGen)
+- [ ] Set up multi-agent framework (google-adk)
 - [ ] Configure PostgreSQL database with migration system
 - [ ] Implement Redis caching layer for performance
 - [ ] Create Docker containerization setup
@@ -47,7 +52,8 @@ Build an intelligent multi-agent AI system that takes user inputs (location, bud
 - [ ] User profile and preferences model
 - [ ] Trip planning data structures
 - [ ] Booking status tracking models
-- [ ] Agent communication protocols
+- [ ] google-adk agent communication protocols
+- [ ] google-adk agent state management
 - [ ] Error handling and retry mechanisms
 
 #### Authentication & Security
@@ -55,6 +61,7 @@ Build an intelligent multi-agent AI system that takes user inputs (location, bud
 - [ ] User registration and login endpoints
 - [ ] Rate limiting and security middleware
 - [ ] API key management for external services
+- [ ] google-adk agent authentication and permissions
 
 ### Phase 2: Multi-Agent System Development (Weeks 3-5)
 **Objective**: Develop specialized AI agents for different travel planning tasks
@@ -94,12 +101,13 @@ Build an intelligent multi-agent AI system that takes user inputs (location, bud
 - [ ] Cost prediction and forecasting
 - [ ] Alternative option suggestions for budget constraints
 
-#### Coordinator Agent
-- [ ] Inter-agent communication protocols
-- [ ] Conflict resolution mechanisms
-- [ ] Timeline optimization
-- [ ] Quality assurance checks
-- [ ] Final itinerary compilation
+#### google-adk Runtime Integration
+- [ ] Agent lifecycle management with google-adk
+- [ ] Inter-agent communication via google-adk protocols
+- [ ] Conflict resolution using google-adk mechanisms
+- [ ] Timeline optimization with google-adk orchestration
+- [ ] Quality assurance checks through google-adk monitoring
+- [ ] Final itinerary compilation via google-adk coordination
 
 ### Phase 3: External API Integrations (Weeks 6-7)
 **Objective**: Connect with third-party services for real booking capabilities
@@ -187,10 +195,17 @@ Build an intelligent multi-agent AI system that takes user inputs (location, bud
 ```
 requirements-automation-adk/
 ├── backend/
-│   ├── agents/
-│   ├── api/
-│   ├── models/
-│   ├── services/
+│   ├── agents/           # google-adk agent implementations
+│   │   ├── research/
+│   │   ├── flight/
+│   │   ├── accommodation/
+│   │   ├── activity/
+│   │   ├── budget/
+│   │   └── booking/
+│   ├── api/              # FastAPI endpoints
+│   ├── models/           # SQLAlchemy models
+│   ├── services/         # Business logic
+│   ├── google_adk/       # google-adk configuration
 │   └── tests/
 ├── frontend/
 │   ├── components/
@@ -200,6 +215,7 @@ requirements-automation-adk/
 ├── docs/
 ├── scripts/
 ├── docker/
+├── google-adk-config/    # google-adk runtime configuration
 └── .github/
     └── workflows/
 ```
@@ -225,7 +241,7 @@ requirements-automation-adk/
 - **Database**: PostgreSQL
 - **Cache**: Redis
 - **Message Queue**: Celery with Redis
-- **AI Framework**: CrewAI or Microsoft AutoGen
+- **AI Framework**: google-adk
 - **Authentication**: JWT tokens
 
 ### Frontend
@@ -281,9 +297,11 @@ requirements-automation-adk/
 ### Documentation
 - [ ] API documentation with OpenAPI/Swagger
 - [ ] User guide and tutorials
-- [ ] Developer setup instructions
-- [ ] Troubleshooting guides
-- [ ] Agent behavior documentation
+- [ ] Developer setup instructions for google-adk
+- [ ] Troubleshooting guides for google-adk agents
+- [ ] google-adk agent behavior documentation
+- [ ] google-adk runtime configuration guide
+- [ ] Multi-agent coordination patterns with google-adk
 
 ### Monitoring & Analytics
 - [ ] User behavior analytics
@@ -297,11 +315,14 @@ requirements-automation-adk/
 ## 🚀 Getting Started
 
 1. **Clone the repository**
-2. **Set up development environment** (Docker recommended)
-3. **Configure environment variables** and API keys
-4. **Run database migrations**
-5. **Start the development servers**
-6. **Run initial tests**
+2. **Install google-adk framework** and dependencies
+3. **Set up development environment** (Docker recommended)
+4. **Configure google-adk runtime** and environment variables
+5. **Configure API keys** for external services
+6. **Run database migrations**
+7. **Initialize google-adk agents**
+8. **Start the development servers** and google-adk runtime
+9. **Run initial tests** including agent coordination tests
 
 For detailed setup instructions, see [SETUP.md](./SETUP.md)
 
