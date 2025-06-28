@@ -12,6 +12,7 @@ from .context_managers import (
     cleanup_global_resources
 )
 from .security import SecurityConfig, create_security_middleware
+from .orchestrator import AgentOrchestrator, ConversationStep
 
 __version__ = "0.1.0"
 
@@ -44,6 +45,10 @@ __all__ = [
     # Security
     "SecurityConfig",
     "create_security_middleware",
+    
+    # Orchestration
+    "AgentOrchestrator",
+    "ConversationStep",
     
     # Metadata
     "__version__"

@@ -4,7 +4,7 @@ Agent Orchestrator for multi-agent conversations and workflows
 
 import asyncio
 from typing import Dict, List, Any, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 
 from .logging_config import get_logger
@@ -16,7 +16,7 @@ class ConversationStep:
     agent_name: str
     method: str
     params: Dict[str, Any]
-    depends_on: List[str] = None
+    depends_on: List[str] = field(default_factory=list)
     
     
 class AgentOrchestrator:
