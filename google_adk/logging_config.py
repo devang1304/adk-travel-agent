@@ -96,7 +96,7 @@ class GoogleADKLogger:
         cls._configured = True
         
     @classmethod
-    def get_logger(cls, name: str, agent_name: Optional[str] = None) -> logging.Logger:
+    def get_logger(cls, name: str, agent_name: Optional[str] = None):
         """Get a configured logger instance"""
         if not cls._configured:
             cls.configure()
@@ -106,9 +106,8 @@ class GoogleADKLogger:
         if logger_key not in cls._loggers:
             logger = logging.getLogger(name)
             
-            # Create a custom adapter if agent_name is provided
-            if agent_name:
-                logger = GoogleADKLoggerAdapter(logger, {"agent_name": agent_name})
+            # Always create custom adapter with operation methods
+            logger = GoogleADKLoggerAdapter(logger, {"agent_name": agent_name} if agent_name else {})
                 
             cls._loggers[logger_key] = logger
             

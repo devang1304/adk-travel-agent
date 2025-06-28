@@ -4,7 +4,7 @@ Provides proper resource management and cleanup patterns
 """
 
 import asyncio
-import aiohttp
+import aiohttp.web
 from typing import Optional, AsyncGenerator, Dict, Any, List
 from contextlib import asynccontextmanager
 import logging
