@@ -11,8 +11,9 @@ from .runtime_config import RuntimeConfig, AgentConfig, RuntimeManager
 from .logging_config import get_logger
 from .exceptions import (
     AgentError, AgentNotFoundError, AgentAlreadyExistsError,
-    AgentStartupError, ValidationError, handle_exception
+    AgentStartupError, ValidationError, ToolError, handle_exception
 )
+from tools.tool_registry import get_tool_registry
 
 
 class BaseAgent(ABC):
@@ -32,6 +33,7 @@ class BaseAgent(ABC):
         self.is_running = False
         self.capabilities = config.capabilities.copy()
         self.logger = get_logger(f"agent.{self.name}", agent_name=self.name)
+        self.tool_registry = get_tool_registry()
         
     @abstractmethod
     async def initialize(self) -> None:
@@ -182,6 +184,13 @@ class BaseAgent(ABC):
             )
             return True
         return False
+        
+    async def use_tool(self, tool_name: str, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Use a tool from the registry"""
+        tool = self.tool_registry.get(tool_name)
+        if not tool:
+            raise ToolError(f"Tool {tool_name} not found")
+        return await tool.execute(params)
 
 
 class AgentFactory:

@@ -34,9 +34,16 @@ class PlanningAgent(BaseAgent):
         days = params.get("days")
         research_data = context.get("research_agent", {})
         
+        # Validate planning data
+        validation_result = await self.use_tool("validate_data", {
+            "data": {"budget": budget, "days": days},
+            "rules": ["budget_positive", "days_valid"]
+        })
+        
         return {
             "budget_allocated": budget,
             "duration": f"{days} days",
             "schedule": ["Day 1: Museum", "Day 2: Park"],
-            "research_used": research_data.get("destination")
+            "research_used": research_data.get("destination"),
+            "validation": validation_result
         }

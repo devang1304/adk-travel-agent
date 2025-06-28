@@ -30,9 +30,16 @@ class ResearchAgent(BaseAgent):
     async def _research_destination(self, params):
         """Research destination information"""
         destination = params.get("destination")
+        
+        # Use web search tool
+        search_results = await self.use_tool("web_search", {
+            "query": f"{destination} attractions weather"
+        })
+        
         return {
             "destination": destination,
             "attractions": ["Museum", "Park", "Restaurant"],
             "weather": "Sunny",
-            "best_time": "Morning"
+            "best_time": "Morning",
+            "search_data": search_results
         }

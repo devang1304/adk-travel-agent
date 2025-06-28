@@ -8,13 +8,17 @@ from agents.research_agent import ResearchAgent
 from agents.planning_agent import PlanningAgent  
 from agents.coordinator_agent import CoordinatorAgent
 from workflows.travel_planning import create_travel_workflow
+from examples.tool_setup import setup_tools
 
 
 async def main():
     """Run travel planning demo"""
     logger = get_logger("demo")
     
-    # Setup
+    # Setup tools
+    setup_tools()
+    
+    # Setup runtime
     config = RuntimeConfig(environment="development")
     runtime = RuntimeManager(config)
     await runtime.start()
