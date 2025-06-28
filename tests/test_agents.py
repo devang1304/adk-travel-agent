@@ -1,5 +1,5 @@
 """
-Tests for agent functionality and lifecycle management
+Unit tests for individual agents and tools
 """
 
 import pytest
@@ -7,9 +7,129 @@ import asyncio
 from unittest.mock import AsyncMock, patch
 
 from google_adk.agent_factory import BaseAgent, AgentFactory
-from google_adk.runtime_config import AgentConfig, RuntimeManager
+from google_adk.runtime_config import AgentConfig, RuntimeManager, RuntimeConfig
 from google_adk.exceptions import AgentError, AgentStartupError, ValidationError
 from google_adk.context_managers import managed_agent
+from agents.research_agent import ResearchAgent
+from agents.planning_agent import PlanningAgent
+from agents.coordinator_agent import CoordinatorAgent
+from tools.optimization_tools import PlanningOptimizerTool, BudgetOptimizerTool
+from tools.quality_tools import DataQualityTool, PlanValidatorTool
+
+
+@pytest.fixture
+async def runtime_setup():
+    """Setup runtime for testing"""
+    config = RuntimeConfig(environment="test")
+    runtime = RuntimeManager(config)
+    await runtime.start()
+    factory = AgentFactory(runtime)
+    yield factory
+    await runtime.stop()
+
+
+@pytest.mark.asyncio
+class TestSpecificAgents:
+    """Test specific agent implementations"""
+    
+    async def test_research_agent_initialization(self, runtime_setup):
+        """Test research agent initialization"""
+        factory = runtime_setup
+        factory.register_agent_type("research", ResearchAgent)
+        agent = await factory.create_agent("test_research", "research")
+        
+        assert agent.name == "test_research"
+        assert agent.has_capability("research_destination")
+        assert agent.has_capability("consensus_vote")
+        
+    async def test_planning_agent_task_execution(self, runtime_setup):
+        """Test planning agent task execution"""
+        factory = runtime_setup
+        factory.register_agent_type("planning", PlanningAgent)
+        agent = await factory.create_agent("test_planning", "planning")
+        
+        task = {
+            "method": "create_itinerary",
+            "params": {"budget": 1500, "days": 3},
+            "context": {"research_agent": {"destination": "Paris"}}
+        }
+        
+        result = await agent.execute_task(task)
+        assert "budget_allocated" in result
+        assert result["budget_allocated"] == 1500
+        
+    async def test_coordinator_consensus_voting(self, runtime_setup):
+        """Test coordinator consensus voting"""
+        factory = runtime_setup
+        factory.register_agent_type("coordinator", CoordinatorAgent)
+        agent = await factory.create_agent("test_coordinator", "coordinator")
+        
+        task = {
+            "method": "consensus_vote",
+            "params": {"question": "Approve final plan?"}
+        }
+        
+        result = await agent.execute_task(task)
+        assert "vote" in result
+        assert "confidence" in result
+
+
+@pytest.mark.asyncio
+class TestAdvancedTools:
+    """Test advanced tool implementations"""
+    
+    async def test_planning_optimizer_tool(self):
+        """Test planning optimizer"""
+        tool = PlanningOptimizerTool()
+        
+        params = {"budget": 2000, "days": 5, "priorities": ["cost"]}
+        result = await tool.execute(params)
+        
+        assert "optimized_plan" in result
+        assert "budget_allocation" in result["optimized_plan"]
+        assert result["optimized_plan"]["cost_savings"] > 0
+        
+    async def test_budget_optimizer_tool(self):
+        """Test budget optimizer"""
+        tool = BudgetOptimizerTool()
+        
+        params = {"budget": 1000}
+        result = await tool.execute(params)
+        
+        assert "allocations" in result
+        assert "total" in result
+        assert result["total"] <= 1000
+        
+    async def test_data_quality_tool(self):
+        """Test data quality checker"""
+        tool = DataQualityTool()
+        
+        # Test good data
+        params = {
+            "data": {"budget": 1500, "destination": "Paris", "days": 3},
+            "required_fields": ["budget", "destination"]
+        }
+        result = await tool.execute(params)
+        
+        assert result["quality_score"] > 0.5
+        assert result["status"] in ["good", "needs_improvement"]
+        
+    async def test_plan_validator_tool(self):
+        """Test plan validator"""
+        tool = PlanValidatorTool()
+        
+        params = {
+            "plan": {
+                "budget": 1500,
+                "destination": "Paris",
+                "schedule": ["Day 1: Museum"]
+            }
+        }
+        result = await tool.execute(params)
+        
+        assert "valid" in result
+        assert "checks" in result
+        assert result["confidence"] > 0
 
 
 class TestBaseAgent:
