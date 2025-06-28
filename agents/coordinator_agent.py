@@ -12,6 +12,7 @@ class CoordinatorAgent(BaseAgent):
         """Initialize coordination capabilities"""
         self.add_capability("finalize_plan")
         self.add_capability("coordinate_workflow")
+        self.add_capability("consensus_vote")
         
     async def process_message(self, message):
         """Process coordination requests"""
@@ -21,9 +22,12 @@ class CoordinatorAgent(BaseAgent):
         """Execute coordination tasks"""
         method = task.get("method")
         context = task.get("context", {})
+        params = task.get("params", {})
         
         if method == "finalize_plan":
             return await self._finalize_plan(context)
+        elif method == "consensus_vote":
+            return await self._consensus_vote(params)
         
         return {"error": f"Unknown method: {method}"}
         
@@ -41,3 +45,15 @@ class CoordinatorAgent(BaseAgent):
                 "status": "finalized"
             }
         }
+        
+    async def _consensus_vote(self, params):
+        """Vote on consensus questions"""
+        question = params.get("question", "")
+        
+        # Simple consensus logic for coordinator
+        if "budget" in question.lower():
+            return {"vote": "approve", "confidence": 0.8}
+        elif "plan" in question.lower():
+            return {"vote": "approve", "confidence": 0.9}
+        else:
+            return {"vote": "neutral", "confidence": 0.5}

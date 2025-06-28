@@ -12,6 +12,7 @@ class PlanningAgent(BaseAgent):
         """Initialize planning capabilities"""
         self.add_capability("create_itinerary")
         self.add_capability("optimize_schedule")
+        self.add_capability("consensus_vote")
         
     async def process_message(self, message):
         """Process planning requests"""
@@ -25,6 +26,8 @@ class PlanningAgent(BaseAgent):
         
         if method == "create_itinerary":
             return await self._create_itinerary(params, context)
+        elif method == "consensus_vote":
+            return await self._consensus_vote(params)
         
         return {"error": f"Unknown method: {method}"}
         
@@ -47,3 +50,15 @@ class PlanningAgent(BaseAgent):
             "research_used": research_data.get("destination"),
             "validation": validation_result
         }
+        
+    async def _consensus_vote(self, params):
+        """Vote on consensus questions"""
+        question = params.get("question", "")
+        
+        # Planning agent focuses on logistics and feasibility
+        if "budget" in question.lower() or "schedule" in question.lower():
+            return {"vote": "approve", "confidence": 0.9}
+        elif "itinerary" in question.lower():
+            return {"vote": "approve", "confidence": 0.95}
+        else:
+            return {"vote": "neutral", "confidence": 0.7}
